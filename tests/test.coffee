@@ -101,7 +101,7 @@
 
 puts = console.log
 print = require('sys').print
-ck = require './lib/coffeekup'
+ck = require '../lib/coffeekup'
 render = ck.render
 
 [tests, passed, failed, errors] = [[], [], [], []]

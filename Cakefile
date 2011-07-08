@@ -4,6 +4,6 @@ task 'build', ->
   exec 'coffee -o lib -c src/*.coffee', (err) ->
     console.log err if err
 
-task 'test', -> require('./tests/test').run()
+task 'test', -> require('./tests/test.coffee').run()
 
 task 'benchmark', -> require('./benchmarks/benchmark').run()

@@ -1,4 +1,4 @@
-coffeekup = require './lib/coffeekup'
+coffeekup = require '../lib/coffeekup'
 jade = require 'jade'
 ejs = require 'ejs'
 eco = require 'eco'
