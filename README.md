@@ -1,5 +1,5 @@
 # Note:
-This is an interim fork.
+This is an interim fork as @mauricemach looks very busy.
 
 # CoffeeKup
 Markup as CoffeeScript
