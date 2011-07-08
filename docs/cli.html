@@ -1,0 +1,67 @@
+<!DOCTYPE html>  <html> <head>   <title>cli.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               cli.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">coffeekup = </span><span class="nx">require</span> <span class="s1">&#39;./coffeekup&#39;</span>
+<span class="nv">fs = </span><span class="nx">require</span> <span class="s1">&#39;fs&#39;</span>
+<span class="nv">path = </span><span class="nx">require</span> <span class="s1">&#39;path&#39;</span>
+<span class="nv">puts = </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span>
+<span class="p">{</span><span class="nx">OptionParser</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span> <span class="s1">&#39;coffee-script/lib/optparse&#39;</span>
+
+<span class="nv">argv = </span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">..]</span>
+<span class="nv">options = </span><span class="kc">null</span>
+
+<span class="nv">render = </span><span class="nf">(input_path, output_directory) -&gt;</span>
+  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span> <span class="nx">input_path</span><span class="p">,</span> <span class="nf">(err, contents) -&gt;</span>
+    <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
+    <span class="nv">html = </span><span class="nx">coffeekup</span><span class="p">.</span><span class="nx">render</span> <span class="nb">String</span><span class="p">(</span><span class="nx">contents</span><span class="p">),</span> <span class="nx">options</span>
+    <span class="nx">write</span> <span class="nx">input_path</span><span class="p">,</span> <span class="nx">html</span><span class="p">,</span> <span class="nx">output_directory</span>
+
+<span class="nv">write = </span><span class="nf">(input_path, html, output_directory) -&gt;</span>
+  <span class="nv">filename = </span><span class="nx">path</span><span class="p">.</span><span class="nx">basename</span><span class="p">(</span><span class="nx">input_path</span><span class="p">,</span> <span class="nx">path</span><span class="p">.</span><span class="nx">extname</span><span class="p">(</span><span class="nx">input_path</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;.html&#39;</span>
+  <span class="nv">dir = </span><span class="nx">output_directory</span> <span class="o">or</span> <span class="nx">path</span><span class="p">.</span><span class="nx">dirname</span> <span class="nx">input_path</span>
+  <span class="nx">path</span><span class="p">.</span><span class="nx">exists</span> <span class="nx">dir</span><span class="p">,</span> <span class="nf">(exists) -&gt;</span>
+    <span class="nx">unless</span> <span class="nx">exists</span> <span class="k">then</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">mkdirSync</span> <span class="nx">dir</span><span class="p">,</span> <span class="mi">0777</span>
+    
+    <span class="nv">output_path = </span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span> <span class="nx">dir</span><span class="p">,</span> <span class="nx">filename</span>
+    <span class="nv">html = </span><span class="s1">&#39; &#39;</span> <span class="k">if</span> <span class="nx">html</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+    <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span> <span class="nx">output_path</span><span class="p">,</span> <span class="nx">html</span><span class="p">,</span> <span class="nf">(err) -&gt;</span>
+      <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
+      <span class="nx">puts</span> <span class="nx">html</span> <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">print</span>
+      <span class="nx">puts</span> <span class="s2">&quot;Compiled #{input_path}&quot;</span> <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">watch</span>
+
+<span class="nv">usage = </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">  Usage:</span>
+<span class="s1">    coffeekup [options] path/to/template.coffee</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="nv">switches = </span><span class="p">[</span>
+  <span class="p">[</span><span class="s1">&#39;-w&#39;</span><span class="p">,</span> <span class="s1">&#39;--watch&#39;</span><span class="p">,</span> <span class="s1">&#39;watch templates for changes, and recompile&#39;</span><span class="p">]</span>
+  <span class="p">[</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output [dir]&#39;</span><span class="p">,</span> <span class="s1">&#39;set the directory for compiled html&#39;</span><span class="p">]</span>
+  <span class="p">[</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--print&#39;</span><span class="p">,</span> <span class="s1">&#39;print the compiled html to stdout&#39;</span><span class="p">]</span>
+  <span class="p">[</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--format&#39;</span><span class="p">,</span> <span class="s1">&#39;apply line breaks and indentation to html output&#39;</span><span class="p">]</span>
+  <span class="p">[</span><span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="s1">&#39;--utils&#39;</span><span class="p">,</span> <span class="s1">&#39;add helper locals (currently only &quot;render&quot;)&#39;</span><span class="p">]</span>
+  <span class="p">[</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="s1">&#39;display CoffeeKup version&#39;</span><span class="p">]</span>
+  <span class="p">[</span><span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span class="p">,</span> <span class="s1">&#39;display this help message&#39;</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="vi">@run = </span><span class="o">-&gt;</span>
+  <span class="nv">parser = </span><span class="k">new</span> <span class="nx">OptionParser</span> <span class="nx">switches</span><span class="p">,</span> <span class="nx">usage</span>
+  <span class="nv">options = </span><span class="nx">parser</span><span class="p">.</span><span class="nx">parse</span> <span class="nx">argv</span>
+  <span class="nv">args = </span><span class="nx">options</span><span class="p">.</span><span class="nx">arguments</span>
+  <span class="k">delete</span> <span class="nx">options</span><span class="p">.</span><span class="nx">arguments</span>
+
+  <span class="nx">puts</span> <span class="nx">parser</span><span class="p">.</span><span class="nx">help</span><span class="p">()</span> <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">help</span> <span class="o">or</span> <span class="nx">argv</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span>
+  <span class="nx">puts</span> <span class="nx">coffeekup</span><span class="p">.</span><span class="nx">version</span> <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">version</span>
+  <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">utils</span>
+    <span class="nx">options</span><span class="p">.</span><span class="nx">locals</span> <span class="o">?=</span> <span class="p">{}</span>
+    <span class="nv">options.locals.render = </span><span class="nf">(file) -&gt;</span>
+      <span class="nv">contents = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span> <span class="nx">file</span>
+      <span class="nx">coffeekup</span><span class="p">.</span><span class="nx">render</span> <span class="nb">String</span><span class="p">(</span><span class="nx">contents</span><span class="p">),</span> <span class="nx">options</span>
+
+  <span class="k">if</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="nv">file = </span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">watch</span>
+      <span class="nx">fs</span><span class="p">.</span><span class="nx">watchFile</span> <span class="nx">file</span><span class="p">,</span> <span class="p">{</span><span class="nv">persistent: </span><span class="kc">true</span><span class="p">,</span> <span class="nv">interval: </span><span class="mi">500</span><span class="p">},</span> <span class="nf">(curr, prev) -&gt;</span>
+        <span class="k">return</span> <span class="k">if</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">size</span> <span class="o">is</span> <span class="nx">prev</span><span class="p">.</span><span class="nx">size</span> <span class="o">and</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">mtime</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">is</span> <span class="nx">prev</span><span class="p">.</span><span class="nx">mtime</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span>
+        <span class="nx">render</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">output</span>
+    <span class="k">else</span> <span class="nx">render</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">output</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

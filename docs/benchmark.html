@@ -1,0 +1,200 @@
+<!DOCTYPE html>  <html> <head>   <title>benchmark.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               benchmark.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">coffeekup = </span><span class="nx">require</span> <span class="s1">&#39;./lib/coffeekup&#39;</span>
+<span class="nv">jade = </span><span class="nx">require</span> <span class="s1">&#39;jade&#39;</span>
+<span class="nv">ejs = </span><span class="nx">require</span> <span class="s1">&#39;ejs&#39;</span>
+<span class="nv">eco = </span><span class="nx">require</span> <span class="s1">&#39;eco&#39;</span>
+<span class="nv">haml = </span><span class="nx">require</span> <span class="s1">&#39;haml&#39;</span>
+<span class="nv">puts = </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span>
+
+<span class="nv">data = </span>
+  <span class="nv">title: </span><span class="s1">&#39;test&#39;</span>
+  <span class="nv">inspired: </span><span class="kc">no</span>
+  <span class="nv">users: </span><span class="p">[</span>
+    <span class="p">{</span><span class="nv">email: </span><span class="s1">&#39;house@gmail.com&#39;</span><span class="p">,</span> <span class="nv">name: </span><span class="s1">&#39;house&#39;</span><span class="p">}</span>
+    <span class="p">{</span><span class="nv">email: </span><span class="s1">&#39;cuddy@gmail.com&#39;</span><span class="p">,</span> <span class="nv">name: </span><span class="s1">&#39;cuddy&#39;</span><span class="p">}</span>
+    <span class="p">{</span><span class="nv">email: </span><span class="s1">&#39;wilson@gmail.com&#39;</span><span class="p">,</span> <span class="nv">name: </span><span class="s1">&#39;wilson&#39;</span><span class="p">}</span>
+  <span class="p">]</span>
+
+<span class="nv">coffeekup_template = </span><span class="o">-&gt;</span>
+  <span class="nx">doctype</span> <span class="mi">5</span>
+  <span class="nx">html</span> <span class="nv">lang: </span><span class="s1">&#39;en&#39;</span><span class="p">,</span> <span class="o">-&gt;</span>
+    <span class="nx">head</span> <span class="o">-&gt;</span>
+      <span class="nx">meta</span> <span class="nv">charset: </span><span class="s1">&#39;utf-8&#39;</span>
+      <span class="nx">title</span> <span class="nx">@title</span>
+      <span class="nx">style</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">        body {font-family: &quot;sans-serif&quot;}</span>
+<span class="s1">        section, header {display: block}</span>
+<span class="s1">      &#39;&#39;&#39;</span>
+    <span class="nx">body</span> <span class="o">-&gt;</span>
+      <span class="nx">section</span> <span class="o">-&gt;</span>
+        <span class="nx">header</span> <span class="o">-&gt;</span>
+          <span class="nx">h1</span> <span class="nx">@title</span>
+        <span class="k">if</span> <span class="nx">@inspired</span>
+          <span class="nx">p</span> <span class="s1">&#39;Create a witty example&#39;</span>
+        <span class="k">else</span>
+          <span class="nx">p</span> <span class="s1">&#39;Go meta&#39;</span>
+        <span class="nx">ul</span> <span class="o">-&gt;</span>
+          <span class="k">for</span> <span class="nx">user</span> <span class="k">in</span> <span class="nx">@users</span>
+            <span class="nx">li</span> <span class="nx">user</span><span class="p">.</span><span class="nx">name</span>
+            <span class="nx">li</span> <span class="o">-&gt;</span> <span class="nx">a</span> <span class="nv">href: </span><span class="s2">&quot;mailto:#{user.email}&quot;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">user</span><span class="p">.</span><span class="nx">email</span>
+
+<span class="nv">coffeekup_string_template = </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">  doctype 5</span>
+<span class="s2">  html lang: &#39;en&#39;, -&gt;</span>
+<span class="s2">    head -&gt;</span>
+<span class="s2">      meta charset: &#39;utf-8&#39;</span>
+<span class="s2">      title @title</span>
+<span class="s2">      style &#39;&#39;&#39;</span>
+<span class="s2">        body {font-family: &quot;</span><span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="s2">&quot;}</span>
+<span class="s2">        section, header {display: block}</span>
+<span class="s2">      &#39;&#39;&#39;</span>
+<span class="s2">    body -&gt;</span>
+<span class="s2">      section -&gt;</span>
+<span class="s2">        header -&gt;</span>
+<span class="s2">          h1 @title</span>
+<span class="s2">        if @inspired</span>
+<span class="s2">          p &#39;Create a witty example&#39;</span>
+<span class="s2">        else</span>
+<span class="s2">          p &#39;Go meta&#39;</span>
+<span class="s2">        ul -&gt;</span>
+<span class="s2">          for user in @users</span>
+<span class="s2">            li user.name</span>
+<span class="s2">            li -&gt; a href: &quot;</span><span class="nx">mailto</span><span class="o">:</span><span class="err">\</span><span class="c1">#{user.email}&quot;, -&gt; user.email</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">coffeekup_compiled_template = coffeekup.compile coffeekup_template</span>
+
+<span class="s2">jade_template = &#39;&#39;&#39;</span>
+<span class="s2">  !!! 5</span>
+<span class="s2">  html(lang=&quot;</span><span class="nx">en</span><span class="s2">&quot;)</span>
+<span class="s2">    head</span>
+<span class="s2">      meta(charset=&quot;</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span><span class="s2">&quot;)</span>
+<span class="s2">      title= title</span>
+<span class="s2">      style</span>
+<span class="s2">        | body {font-family: &quot;</span><span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="s2">&quot;}</span>
+<span class="s2">        | section, header {display: block}</span>
+<span class="s2">    body</span>
+<span class="s2">      section</span>
+<span class="s2">        header</span>
+<span class="s2">          h1= title</span>
+<span class="s2">        - if (inspired)</span>
+<span class="s2">          p Create a witty example</span>
+<span class="s2">        - else</span>
+<span class="s2">          p Go meta</span>
+<span class="s2">        ul</span>
+<span class="s2">          - each user in users</span>
+<span class="s2">            li= user.name</span>
+<span class="s2">            li</span>
+<span class="s2">              a(href=&quot;</span><span class="nx">mailto</span><span class="o">:</span><span class="s2">&quot;+user.email)= user.email</span>
+<span class="s2">&#39;&#39;&#39;</span>
+
+<span class="s2">ejs_template = &#39;&#39;&#39;</span>
+<span class="s2">  &lt;!DOCTYPE html&gt;</span>
+<span class="s2">  &lt;html lang=&quot;</span><span class="nx">en</span><span class="s2">&quot;&gt;</span>
+<span class="s2">    &lt;head&gt;</span>
+<span class="s2">      &lt;meta charset=&quot;</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span><span class="s2">&quot;&gt;</span>
+<span class="s2">      &lt;title&gt;&lt;%= title %&gt;&lt;/title&gt;</span>
+<span class="s2">      &lt;style&gt;</span>
+<span class="s2">        body {font-family: &quot;</span><span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="s2">&quot;}</span>
+<span class="s2">        section, header {display: block}</span>
+<span class="s2">      &lt;/style&gt;</span>
+<span class="s2">    &lt;/head&gt;</span>
+<span class="s2">    &lt;body&gt;</span>
+<span class="s2">      &lt;section&gt;</span>
+<span class="s2">        &lt;header&gt;</span>
+<span class="s2">          &lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;</span>
+<span class="s2">        &lt;/header&gt;</span>
+<span class="s2">        &lt;% if (inspired) { %&gt;</span>
+<span class="s2">          &lt;p&gt;Create a witty example&lt;/p&gt;</span>
+<span class="s2">        &lt;% } else { %&gt;</span>
+<span class="s2">          &lt;p&gt;Go meta&lt;/p&gt;</span>
+<span class="s2">        &lt;% } %&gt;</span>
+<span class="s2">        &lt;ul&gt;</span>
+<span class="s2">          &lt;% for (user in users) { %&gt;</span>
+<span class="s2">            &lt;li&gt;&lt;%= user.name %&gt;&lt;/li&gt;</span>
+<span class="s2">            &lt;li&gt;&lt;a href=&quot;</span><span class="nx">mailto</span><span class="o">:&lt;%=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">email</span> <span class="o">%&gt;</span><span class="s2">&quot;&gt;&lt;%= user.email %&gt;&lt;/a&gt;&lt;/li&gt;</span>
+<span class="s2">          &lt;% } %&gt;</span>
+<span class="s2">        &lt;/ul&gt;</span>
+<span class="s2">      &lt;/section&gt;</span>
+<span class="s2">    &lt;/body&gt;</span>
+<span class="s2">  &lt;/html&gt;</span>
+<span class="s2">&#39;&#39;&#39;</span>
+
+<span class="s2">eco_template = &#39;&#39;&#39;</span>
+<span class="s2">  &lt;!DOCTYPE html&gt;</span>
+<span class="s2">  &lt;html lang=&quot;</span><span class="nx">en</span><span class="s2">&quot;&gt;</span>
+<span class="s2">    &lt;head&gt;</span>
+<span class="s2">      &lt;meta charset=&quot;</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span><span class="s2">&quot;&gt;</span>
+<span class="s2">      &lt;title&gt;&lt;%= @title %&gt;&lt;/title&gt;</span>
+<span class="s2">      &lt;style&gt;</span>
+<span class="s2">        body {font-family: &quot;</span><span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="s2">&quot;}</span>
+<span class="s2">        section, header {display: block}</span>
+<span class="s2">      &lt;/style&gt;</span>
+<span class="s2">    &lt;/head&gt;</span>
+<span class="s2">    &lt;body&gt;</span>
+<span class="s2">      &lt;section&gt;</span>
+<span class="s2">        &lt;header&gt;</span>
+<span class="s2">          &lt;h1&gt;&lt;%= @title %&gt;&lt;/h1&gt;</span>
+<span class="s2">        &lt;/header&gt;</span>
+<span class="s2">        &lt;% if @inspired: %&gt;</span>
+<span class="s2">          &lt;p&gt;Create a witty example&lt;/p&gt;</span>
+<span class="s2">        &lt;% else: %&gt;</span>
+<span class="s2">          &lt;p&gt;Go meta&lt;/p&gt;</span>
+<span class="s2">        &lt;% end %&gt;</span>
+<span class="s2">        &lt;ul&gt;</span>
+<span class="s2">          &lt;% for user in @users: %&gt;</span>
+<span class="s2">            &lt;li&gt;&lt;%= user.name %&gt;&lt;/li&gt;</span>
+<span class="s2">            &lt;li&gt;&lt;a href=&quot;</span><span class="nx">mailto</span><span class="o">:&lt;%=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">email</span> <span class="o">%&gt;</span><span class="s2">&quot;&gt;&lt;%= user.email %&gt;&lt;/a&gt;&lt;/li&gt;</span>
+<span class="s2">          &lt;% end %&gt;</span>
+<span class="s2">        &lt;/ul&gt;</span>
+<span class="s2">      &lt;/section&gt;</span>
+<span class="s2">    &lt;/body&gt;</span>
+<span class="s2">  &lt;/html&gt;</span>
+<span class="s2">&#39;&#39;&#39;</span>
+
+<span class="s2">haml_template = &#39;&#39;&#39;</span>
+<span class="s2">  !!! 5</span>
+<span class="s2">  %html{lang: &quot;</span><span class="nx">en</span><span class="s2">&quot;}</span>
+<span class="s2">    %head</span>
+<span class="s2">      %meta{charset: &quot;</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span><span class="s2">&quot;}</span>
+<span class="s2">      %title= title</span>
+<span class="s2">      :css</span>
+<span class="s2">        body {font-family: &quot;</span><span class="nx">sans</span><span class="o">-</span><span class="nx">serif</span><span class="s2">&quot;}</span>
+<span class="s2">        section, header {display: block}</span>
+<span class="s2">    %body</span>
+<span class="s2">      %section</span>
+<span class="s2">        %header</span>
+<span class="s2">          %h1= title</span>
+<span class="s2">        :if inspired</span>
+<span class="s2">          %p Create a witty example</span>
+<span class="s2">        :if !inspired</span>
+<span class="s2">          %p Go meta</span>
+<span class="s2">        %ul</span>
+<span class="s2">          :each user in users</span>
+<span class="s2">            %li= user.name</span>
+<span class="s2">            %li</span>
+<span class="s2">              %a{href: &quot;</span><span class="nx">mailto</span><span class="o">:</span><span class="c1">#{user.email}&quot;}= user.email</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+<span class="s1">haml_template_compiled = haml(haml_template)</span>
+
+<span class="s1">benchmark = (title, code) -&gt;</span>
+<span class="s1">  start = new Date</span>
+<span class="s1">  for i in [1..5000]</span>
+<span class="s1">    code()</span>
+<span class="s1">  puts &quot;#{title}: #{new Date - start} ms&quot;</span>
+
+<span class="s1">@run = -&gt;</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">CoffeeKup</span> <span class="p">(</span><span class="nx">precompiled</span><span class="p">)</span><span class="s1">&#39;, -&gt; coffeekup_compiled_template context: data</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">CoffeeKup</span> <span class="p">(</span><span class="nx">code</span><span class="p">)</span><span class="s1">&#39;, -&gt; coffeekup.render coffeekup_template, context: data</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">CoffeeKup</span> <span class="p">(</span><span class="nx">code</span><span class="p">,</span> <span class="nx">cache</span> <span class="kc">off</span><span class="p">)</span><span class="s1">&#39;, -&gt; coffeekup.render coffeekup_template, context: data, cache: off</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">CoffeeKup</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span><span class="s1">&#39;, -&gt; coffeekup.render coffeekup_string_template, context: data</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">CoffeeKup</span> <span class="p">(</span><span class="nx">string</span><span class="p">,</span> <span class="nx">cache</span> <span class="kc">off</span><span class="p">)</span><span class="s1">&#39;, -&gt; coffeekup.render coffeekup_string_template, context: data, cache: off</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">Jade</span> <span class="p">(</span><span class="nx">cache</span> <span class="kc">off</span><span class="p">)</span><span class="s1">&#39;, -&gt; jade.render jade_template, locals: data</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">Jade</span> <span class="p">(</span><span class="nx">cache</span> <span class="kc">on</span><span class="p">)</span><span class="s1">&#39;, -&gt; jade.render jade_template, locals: data, cache: on, filename: &#39;</span><span class="nx">test</span><span class="s1">&#39;</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">ejs</span> <span class="p">(</span><span class="nx">cache</span> <span class="kc">off</span><span class="p">)</span><span class="s1">&#39;, -&gt; ejs.render ejs_template, locals: data</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">ejs</span> <span class="p">(</span><span class="nx">cache</span> <span class="kc">on</span><span class="p">)</span><span class="s1">&#39;, -&gt; ejs.render ejs_template, locals: data, cache: on, filename: &#39;</span><span class="nx">test</span><span class="s1">&#39;</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">haml</span><span class="o">-</span><span class="nx">js</span><span class="s1">&#39;, -&gt; haml.render haml_template, locals: data</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">haml</span><span class="o">-</span><span class="nx">js</span> <span class="p">(</span><span class="nx">precompiled</span><span class="p">)</span><span class="s1">&#39;, -&gt; haml_template_compiled(data)</span>
+<span class="s1">  benchmark &#39;</span><span class="nx">Eco</span><span class="err">&#39;</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="nx">eco</span><span class="p">.</span><span class="nx">render</span> <span class="nx">eco_template</span><span class="p">,</span> <span class="nx">data</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
