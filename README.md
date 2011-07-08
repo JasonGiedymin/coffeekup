@@ -1,3 +1,6 @@
+# Note:
+This is an interim fork.
+
 # CoffeeKup
 Markup as CoffeeScript
 
